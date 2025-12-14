@@ -10,28 +10,27 @@ This repository contains the **Node.js backend MVP**, built with **Hono** and **
 
 ## Core Gameplay (MVP)
 
-* Minimap is empty by default
-* Players can perform a **Radar Scan**
+- Minimap is empty by default
+- Players can perform a **Radar Scan**
+  - Reveals nearby players within a radius for a short duration
+  - Notifies scanned players that they have been spotted
+  - Scan has a server-enforced cooldown
 
-  * Reveals nearby players within a radius for a short duration
-  * Notifies scanned players that they have been spotted
-  * Scan has a server-enforced cooldown
-* Players can target an area and deploy an **Orbital Railcannon**
+- Players can target an area and deploy an **Orbital Railcannon**
+  - Weapon has a charge-up time
+  - All players in the kill zone are notified during the charge phase
+  - Strike resolves automatically after charging
 
-  * Weapon has a charge-up time
-  * All players in the kill zone are notified during the charge phase
-  * Strike resolves automatically after charging
-* Players can activate a **Shield**
+- Players can activate a **Shield**
+  - Single-use
+  - Cooldown-based
+  - Reflects the attack back to the attacker
+  - Shield status is hidden from the attacker
 
-  * Single-use
-  * Cooldown-based
-  * Reflects the attack back to the attacker
-  * Shield status is hidden from the attacker
-* There is **no respawn timer**
-
-  * Being eliminated removes you from active play
-  * Eliminated players can still see the attacker’s last known location
-  * Players must physically reposition and wait for a chance to retaliate
+- **Death & Respawn**
+  - On being eliminated, a player is temporarily removed from active play
+  - Respawn occurs after a cooldown timer (default 5 minutes)
+  - While waiting, eliminated players can still see attacker locations to plan revenge
 
 ---
 
@@ -41,21 +40,20 @@ Orbital uses an **authoritative server model**. All combat, timing, and validati
 
 ### High-Level Components
 
-* Client (separate repo)
+- Client (separate repo)
+  - Next.js PWA
+  - Geolocation API
+  - Push notifications
 
-  * Next.js PWA
-  * Geolocation API
-  * Push notifications
-* Backend
+- Backend
+  - Node.js
+  - Hono (HTTP + WebSocket handling)
+  - Firebase Admin SDK
 
-  * Node.js
-  * Hono (HTTP + WebSocket handling)
-  * Firebase Admin SDK
-* Firebase
-
-  * Firestore (persistent and last-known state)
-  * Firebase Authentication
-  * Firebase Cloud Messaging (pub/sub notifications)
+- Firebase
+  - Firestore (persistent and last-known state)
+  - Firebase Authentication
+  - Firebase Cloud Messaging (pub/sub notifications)
 
 ---
 
@@ -63,12 +61,11 @@ Orbital uses an **authoritative server model**. All combat, timing, and validati
 
 ### Location Updates
 
-* Client sends location updates via REST
-* Server validates movement and accuracy
-* Location is stored:
-
-  * In-memory for hot gameplay state
-  * Periodically persisted to Firestore as last-known position
+- Client sends location updates via REST
+- Server validates movement and accuracy
+- Location is stored:
+  - In-memory for hot gameplay state
+  - Periodically persisted to Firestore as last-known position
 
 ```
 Client -> REST -> Hono -> In-memory state -> Firestore (throttled)
@@ -99,15 +96,15 @@ Server -> Pub/Sub outcome notifications
 
 ### Backend
 
-* Node.js 20+
-* Hono
-* TypeScript
+- Node.js 20+
+- Hono
+- TypeScript
 
 ### Firebase
 
-* Firestore
-* Firebase Authentication
-* Firebase Cloud Messaging
+- Firestore
+- Firebase Authentication
+- Firebase Cloud Messaging
 
 ---
 
@@ -171,27 +168,27 @@ Firestore is **not** used as a real-time position stream.
 
 All player-facing events are delivered via Firebase Cloud Messaging:
 
-* You have been spotted
-* Orbital strike charging
-* Orbital strike impact
-* Shield parry
-* Elimination notice
+- You have been spotted
+- Orbital strike charging
+- Orbital strike impact
+- Shield parry
+- Elimination notice
 
 Clients subscribe to:
 
-* Per-player topics
-* Area-based topics (geohash prefix)
-* Global announcements
+- Per-player topics
+- Area-based topics (geohash prefix)
+- Global announcements
 
 ---
 
 ## Anti-Abuse Measures (MVP)
 
-* Server-side cooldown enforcement
-* Speed and teleport detection on location updates
-* Accuracy threshold checks
-* No client-trusted combat resolution
-* Rate-limited scan and attack endpoints
+- Server-side cooldown enforcement
+- Speed and teleport detection on location updates
+- Accuracy threshold checks
+- No client-trusted combat resolution
+- Rate-limited scan and attack endpoints
 
 ---
 
@@ -223,32 +220,32 @@ npm run dev
 
 Included:
 
-* Single building or campus
-* Anonymous authentication
-* One weapon type
-* Manual scanning only
+- Single building or campus
+- Anonymous authentication
+- One weapon type
+- Manual scanning only
 
 Not included:
 
-* Teams or factions
-* In-app purchases
-* Persistent minimap
-* Matchmaking
+- Teams or factions
+- In-app purchases
+- Persistent minimap
+- Matchmaking
 
 ---
 
 ## Future Improvements
 
-* Weapon-specific elimination penalties
-* Additional orbital weapons with varying charge times and radii
-* Persistent or semi-persistent radar powerups
-* Cooldown-reduction and deception powerups
-* Rare, location-locked superweapons discoverable in the environment
-* Factions, alliances, and betrayal mechanics
-* Heatmaps and safe zones
-* Multiple backend instances with shared state
-* Advanced GPS spoof detection
-* Replay and strike history visualization
+- Weapon-specific elimination penalties
+- Additional orbital weapons with varying charge times and radii
+- Persistent or semi-persistent radar powerups
+- Cooldown-reduction and deception powerups
+- Rare, location-locked superweapons discoverable in the environment
+- Factions, alliances, and betrayal mechanics
+- Heatmaps and safe zones
+- Multiple backend instances with shared state
+- Advanced GPS spoof detection
+- Replay and strike history visualization
 
 ---
 
@@ -256,9 +253,9 @@ Not included:
 
 Orbital is designed around:
 
-* Delayed consequences
-* Psychological pressure
-* Real-world movement
-* Imperfect information
+- Delayed consequences
+- Psychological pressure
+- Real-world movement
+- Imperfect information
 
 The game is intentionally asymmetric, slow-burning, and social.
