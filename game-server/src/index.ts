@@ -11,10 +11,14 @@ app.get("/", (c) => {
   return c.json({ message: "healthy" }, 200);
 });
 
+app.get("/*", (c) => {
+  return c.notFound();
+});
+
 serve(
   {
     fetch: app.fetch,
-    port: 3000,
+    port: 6767,
   },
   (info) => {
     console.log(`Server is running on http://localhost:${info.port}`);
