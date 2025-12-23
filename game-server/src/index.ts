@@ -1,15 +1,14 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
-import fetch from "node-fetch";
+import authenticate from "./middlewares/authenticate.ts";
 
 const app = new Hono();
 
-app.get("/", (c) => {
-  return c.text("Hello Hono!");
-});
+app.use("/api", authenticate);
 
-app.get("/api/authenticate", (c) => {
-  return c.text("hello hono");
+// health check
+app.get("/", (c) => {
+  return c.json({ message: "healthy" }, 200);
 });
 
 serve(
