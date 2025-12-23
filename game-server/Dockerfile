@@ -1,24 +1,15 @@
-FROM node:22-alpine as builder
+FROM node:20-alpine
 
-WORKDIR /game-server
+WORKDIR /app
 
-COPY game-server/package.json game-server/yarn.lock ./
-RUN yarn install --frozen-lockfile
+# Copy only dependency files first (better caching)
+COPY package.json package-lock.json* yarn.lock* ./
 
-COPY game-server ./
+RUN npm install
 
-RUN yarn build
-
-FROM node:18-alpine as production
-
-WORKDIR /game-server
-
-COPY --from=builder /game-server/package.json /game-server/yarn.lock ./
-RUN yarn install --frozen-lockfile --production
-
-COPY --from=builder /game-server/dist /game-server/dist
+# Copy the rest of the source
+COPY . .
 
 EXPOSE 6767
 
-# Step 10: Start the game server
-CMD ["yarn", "start"]
+CMD ["npm", "run", "dev"]

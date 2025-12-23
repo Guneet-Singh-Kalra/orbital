@@ -1,23 +1,23 @@
 services:
-  # Next.js Frontend
-  frontend:
-    build:
-      context: .
-      dockerfile: client/Dockerfile
-    ports:
-      - "3000:3000"
-    # depends_on:
-    # - game-server
-    environment:
-      - NODE_ENV=production
-    networks:
-      - orbital-network
+  # # Next.js Frontend
+  # frontend:
+  #   build:
+  #     context: .
+  #     dockerfile: client/Dockerfile
+  #   ports:
+  #     - "3000:3000"
+  #   # depends_on:
+  #   # - game-server
+  #   environment:
+  #     - NODE_ENV=production
+  #   networks:
+  #     - orbital-network
 
   # Game server backend (Hono)
   game-server:
     build:
-      context: .
-      dockerfile: game-server/Dockerfile
+      context: ./game-server
+      dockerfile: Dockerfile
     ports:
       - "6767:6767"
     environment:
