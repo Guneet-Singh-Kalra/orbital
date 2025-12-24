@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const PlayerModel = z.object({
-  // Firebase Auth UID (injected by server, never trusted from client)
+  // Firebase Auth UID (server-trusted)
   uid: z.string(),
 
   // Public identity
@@ -11,19 +11,25 @@ export const PlayerModel = z.object({
   // Core gameplay state
   alive: z.boolean(),
 
-  // Cooldowns & timers (absolute timestamps, ms)
+  // Cooldowns & timers (absolute timestamps in ms)
   weaponCooldownEndsAt: z.number().int().min(0),
   shieldCooldownEndsAt: z.number().int().min(0),
   lastScanAt: z.number().int().min(0),
   respawnAt: z.number().int().min(0),
 
-  // Snapshot-only location (NOT authoritative)
+  // Authoritative location (from Redis GEO)
+  location: z.object({
+    lat: z.number().min(-90).max(90),
+    lng: z.number().min(-180).max(180),
+  }),
+
+  // Snapshot-only location (for Firestore persistence / debugging)
   lastKnownLocation: z.object({
     lat: z.number().min(-90).max(90),
     lng: z.number().min(-180).max(180),
   }),
 
-  // Stored for convenience / debugging
+  // Geohash (for proximity queries / Redis convenience)
   geohash: z.string().min(1),
 
   // Experimental / future-proofing

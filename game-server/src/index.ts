@@ -13,44 +13,28 @@ app.get("/", (c) => {
 });
 
 /**
- * Initiates an orbital strike at a target location.
+ * @api {post} /api/scan Perform a radar scan for nearby players
+ * @apiName RadarScan
+ * @apiGroup Player
  *
- * This endpoint is fully server-authoritative.
- * The client only provides a target latitude/longitude.
+ * @apiHeader {String} Authorization Firebase ID token in Bearer format.
  *
- * Flow:
- * 1. Authenticates the player via Firebase Auth (middleware).
- * 2. Validates the attacker is alive and not on weapon cooldown.
- * 3. Verifies the target location is within allowed attack range
- *    based on the attacker's authoritative Redis GEO position.
- * 4. Performs a Redis GEO radius query to snapshot all players
- *    currently inside the strike radius.
- * 5. Persists a strike record and frozen target list in Redis.
- * 6. Starts a delayed resolution timer (charge-up phase).
- * 7. Notifies all affected players that an orbital strike is charging.
- * 8. Applies the weapon cooldown immediately to the attacker.
+ * @apiDescription
+ * Allows a player to perform a radar scan that reveals nearby players within a predefined radius.
+ * The scan has a server-enforced cooldown. Scanned players are notified via FCM that they have been detected.
  *
- * Important:
- * - Combat resolution does NOT rely on client data.
- * - Player positions are snapshotted at attack time and are NOT
- *   re-evaluated at impact to avoid GPS jitter exploits.
- * - Damage, shields, deaths, and reflections are resolved asynchronously
- *   by the server after the charge duration elapses.
+ * @apiSuccess {Object[]} players List of nearby players detected by the scan.
+ * @apiSuccess {String} players.playerId Unique ID of the scanned player.
+ * @apiSuccess {String} players.username Username of the scanned player.
+ * @apiSuccess {Object} players.location Last known location of the scanned player.
+ * @apiSuccess {Number} players.location.lat Latitude.
+ * @apiSuccess {Number} players.location.lng Longitude.
  *
- * @route GET /api/attack
- * @auth Requires valid Firebase Authentication
- * @body {Object} body
- * @body {number} body.lat - Target latitude
- * @body {number} body.lng - Target longitude
- * @returns {Object} 200 - Strike confirmation with strikeId and resolve time
- * @throws {401} Unauthorized - Missing or invalid auth
- * @throws {403} Forbidden - Player is dead or not allowed to attack
- * @throws {429} Too Many Requests - Weapon is on cooldown
- * @throws {400} Bad Request - Invalid or out-of-range target location
+ * @apiError (403) {String} message Player is on cooldown and cannot scan yet.
+ * @apiError (401) {String} message Invalid or missing authorization token.
+ * @apiError (500) {String} message Server error.
  */
-app.get("/api/attack", (c) => {
-  // implementation
-});
+app.get("/api/scan", async (c) => {});
 
 app.get("/*", (c) => {
   return c.notFound();
