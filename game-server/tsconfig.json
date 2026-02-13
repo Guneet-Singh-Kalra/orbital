@@ -10,7 +10,7 @@
     "jsxImportSource": "hono/jsx",
     "outDir": "./dist",
     "emitDeclarationOnly": true,
-    "allowImportingTsExtensions": true,
+    "allowImportingTsExtensions": true
   },
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules"]
 }

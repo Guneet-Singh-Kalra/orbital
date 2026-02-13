@@ -1,5 +1,35 @@
 import { createClient } from "redis";
 
+/*
+* Redis key naming conventions for orbital
+
+* players
+*   GEO set containing live player positions
+*   member   -> playerId
+*   value    -> longitude, latitude
+
+* cooldown:{playerId}:{actionName}
+*   String key with TTL
+*   Used for server-enforced cooldowns
+*   Example:
+*     cooldown:abc123:scan
+
+* attack:{attackId}
+*   String key (JSON payload)
+*   Stores pending attack event data
+
+* PUBSUB CHANNELS
+
+* attack:scheduled
+*   Published when a new attack is scheduled
+*   Used to wake workers / listeners
+
+* Notes:
+* - Keys are flat and simple
+* - Redis holds live, ephemeral state
+* - Persistent data belongs in Firestore
+*/
+
 const client = createClient();
 
 client.on("error", (err) => console.log("Redis Client Error", err));
@@ -43,7 +73,15 @@ export async function getPlayersInRadius(
   radiusMeters: number,
 ): Promise<string[]> {
   await connectRedis();
-  const result = await client.geoRadius("players", lng, lat, radiusMeters, "m");
+  const result = await client.geoRadius(
+    "players",
+    {
+      latitude: lat,
+      longitude: lng, // dawg refer to geoqueries type
+    },
+    radiusMeters,
+    "m",
+  );
   return result;
 }
 
