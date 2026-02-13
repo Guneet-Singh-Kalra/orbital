@@ -1,7 +1,7 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import authenticate from "./middlewares/authenticate.ts";
-import redis from "./helpers/redis.ts";
+import redis, { testRedisConnection } from "./helpers/redis.ts";
 
 const app = new Hono();
 
@@ -44,6 +44,7 @@ async function start() {
   // connect to redis
   await redis.connect();
   console.log("Redis connected.");
+  await testRedisConnection();
 
   // start server
   const server = serve(

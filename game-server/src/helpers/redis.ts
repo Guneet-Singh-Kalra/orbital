@@ -7,32 +7,45 @@ import { createClient } from "redis";
 *   GEO set containing live player positions
 *   member   -> playerId
 *   value    -> longitude, latitude
-
+* 
 * cooldown:{playerId}:{actionName}
 *   String key with TTL
 *   Used for server-enforced cooldowns
 *   Example:
 *     cooldown:abc123:scan
-
+* 
 * attack:{attackId}
 *   String key (JSON payload)
 *   Stores pending attack event data
-
+* 
+* 
+* 
 * PUBSUB CHANNELS
-
+* 
 * attack:scheduled
 *   Published when a new attack is scheduled
 *   Used to wake workers / listeners
-
-* Notes:
-* - Keys are flat and simple
-* - Redis holds live, ephemeral state
-* - Persistent data belongs in Firestore
 */
 
-const client = createClient();
+const client = createClient({
+  url: "redis://redis:6379", // this shit will only work inside docker container, use redis://localhost:6379 if u wanna test on local
+});
 
 client.on("error", (err) => console.log("Redis Client Error", err));
+
+export async function testRedisConnection() {
+  if (!client.isOpen) {
+    console.log("Connection failed");
+    return false;
+  }
+  try {
+    const response = await client.ping();
+    console.log("Ping successful:", response);
+    return true;
+  } catch (e) {
+    console.error("Ping failed:", e);
+  }
+}
 
 /**
  * Connect to Redis if not already connected.
@@ -161,3 +174,10 @@ export async function publish(channel: string, message: string) {
 }
 
 export default client;
+
+/*
+ * Notes:
+ * - Keys are flat and simple
+ * - Redis holds live, ephemeral state
+ * - Persistent data belongs in Firestore
+ */
