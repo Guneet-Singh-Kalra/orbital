@@ -9,7 +9,7 @@
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
     "outDir": "./dist",
-    "emitDeclarationOnly": true,
+    "noEmit": true,
     "allowImportingTsExtensions": true
   },
   "exclude": ["node_modules"]
